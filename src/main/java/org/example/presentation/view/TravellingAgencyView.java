@@ -6,6 +6,7 @@ package org.example.presentation.view;
         import javax.swing.*;
         import javax.swing.border.Border;
         import javax.swing.table.DefaultTableModel;
+        import javax.swing.table.TableColumnModel;
         import java.awt.*;
         import java.awt.event.ActionListener;
         import java.beans.PropertyDescriptor;
@@ -58,26 +59,24 @@ package org.example.presentation.view;
             buttons.get(0).setText("LOG OUT");
             buttons.get(0).setBounds(1400,30, 150, 50);
 
-            buttons.get(1).setText("EDIT");
-            buttons.get(1).setBounds(70, 600, 150, 50);
+            //buttons.get(1).setText("EDIT");
+            //buttons.get(1).setBounds(70, 600, 150, 50);
             buttons.get(2).setText("DELETE");
             buttons.get(2).setBounds(230, 600, 150, 50);
             buttons.get(3).setText("ADD");
-            buttons.get(3).setBounds(70, 770, 150, 50);
-            buttons.get(4).setText("SAVE");
-            buttons.get(4).setBounds(230, 770, 150, 50);
+            buttons.get(3).setBounds(70, 600, 150, 50);
 
 
             buttons.get(5).setText("EDIT");
-            buttons.get(5).setBounds(1000, 600, 150, 50);
+            buttons.get(5).setBounds(1000, 770, 150, 50);
             buttons.get(6).setText("DELETE");
             buttons.get(6).setBounds(1160, 600, 150, 50);
             buttons.get(7).setText("ADD");
-            buttons.get(7).setBounds(1000, 770, 150, 50);
+            buttons.get(7).setBounds(1000, 600, 150, 50);
             buttons.get(8).setText("SAVE");
             buttons.get(8).setBounds(1160, 770, 150, 50);
 
-            nrFields=7;
+            nrFields=9;
             fields = new ArrayList<>();
 
             for(int i=0;i<nrFields;i++)
@@ -93,13 +92,16 @@ package org.example.presentation.view;
 
             fields.get(0).setBounds(60,685,320,45);
 
-
             fields.get(1).setBounds(430,685,150,45);
             fields.get(2).setBounds(582,685,150,45);
             fields.get(3).setBounds(734,685,150,45);
             fields.get(4).setBounds(886,685,150,45);
             fields.get(5).setBounds(1038,685,150,45);
             fields.get(6).setBounds(1190,685,150,45);
+            fields.get(7).setBounds(1324,685,0,0);
+            fields.get(7).setVisible(false);
+            fields.get(8).setBounds(1324,685,0,0);
+            fields.get(8).setVisible(false);
             //fields.get(5).setEditable(false);
 
 
@@ -111,15 +113,21 @@ package org.example.presentation.view;
             tablePanel.setBorder(border);
 
             tableModelDestinations= new DefaultTableModel();
+            tableModelDestinations.addColumn("id");
             tableModelDestinations.addColumn("name");
+
             tableModelPackages= new DefaultTableModel();
-            tableModelPackages.addColumn("destination");
+            tableModelPackages.addColumn("id");
             tableModelPackages.addColumn("name");
             tableModelPackages.addColumn("start date");
             tableModelPackages.addColumn("end date");
             tableModelPackages.addColumn("max nr people");
             tableModelPackages.addColumn("price");
+            tableModelPackages.addColumn("details");
+            tableModelPackages.addColumn("destination");
             tableModelPackages.addColumn("status");
+            tableModelPackages.addColumn("destination_id");
+
 
             destinationsTable=new JTable();
             destinationsTable.setModel(tableModelDestinations);
@@ -133,6 +141,10 @@ package org.example.presentation.view;
             destinationsTable.getTableHeader().setForeground(Color.WHITE);
             destinationsTable.setPreferredScrollableViewportSize(new Dimension(350,500));
             destinationsTable.setFillsViewportHeight(true);
+
+            destinationsTable.getColumnModel().getColumn(0).setWidth(0);
+            destinationsTable.getColumnModel().getColumn(0).setMinWidth(0);
+            destinationsTable.getColumnModel().getColumn(0).setMaxWidth(0);
 
             JScrollPane scrollPane = new JScrollPane(destinationsTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scrollPane.setPreferredSize(new Dimension(320,490));
@@ -159,13 +171,22 @@ package org.example.presentation.view;
             packagesTable.setPreferredScrollableViewportSize(new Dimension(1100,500));
             packagesTable.setFillsViewportHeight(true);
 
+
+            packagesTable.getColumnModel().getColumn(0).setWidth(0);
+            packagesTable.getColumnModel().getColumn(0).setMinWidth(0);
+            packagesTable.getColumnModel().getColumn(0).setMaxWidth(0);
+
+            packagesTable.getColumnModel().getColumn(9).setWidth(0);
+            packagesTable.getColumnModel().getColumn(9).setMinWidth(0);
+            packagesTable.getColumnModel().getColumn(9).setMaxWidth(0);
+
             JScrollPane scrollPane2 = new JScrollPane(packagesTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             scrollPane2.setPreferredSize(new Dimension(1070,490));
             scrollPane2.setBorder(border);
             tablePanel2.add(scrollPane2);
             this.add(tablePanel2);
 
-            nrWrongLabels=5;
+            nrWrongLabels=10;
             wrongLabels=new ArrayList<>();
 
             for(int i=0;i<nrWrongLabels;i++)
@@ -181,14 +202,24 @@ package org.example.presentation.view;
 
             wrongLabels.get(0).setText("*please introduce a valid destination");
             wrongLabels.get(0).setBounds(60,730,440,30);
-            wrongLabels.get(1).setText("*please introduce a valid phone number");
-            wrongLabels.get(1).setBounds(1120,450,440,30);
-            wrongLabels.get(2).setText("*please introduce a valid email");
-            wrongLabels.get(2).setBounds(1120,530,440,30);
-            wrongLabels.get(3).setText("*please introduce a valid date");
-            wrongLabels.get(3).setBounds(1120,610,440,30);
-            wrongLabels.get(4).setText("*please select a row");
-            wrongLabels.get(4).setBounds(970,200,440,30);
+            wrongLabels.get(1).setText("*please select a destination");
+            wrongLabels.get(1).setBounds(430,750,440,30);
+            wrongLabels.get(2).setText("*please introduce a valid name");
+            wrongLabels.get(2).setBounds(430,750,440,30);
+            wrongLabels.get(3).setText("*please introduce a valid start date");
+            wrongLabels.get(3).setBounds(430,750,440,30);
+            wrongLabels.get(4).setText("*please introduce a valid end date");
+            wrongLabels.get(4).setBounds(430,750,440,30);
+            wrongLabels.get(5).setText("*please introduce a valid number of people");
+            wrongLabels.get(5).setBounds(430,750,440,30);
+            wrongLabels.get(6).setText("*please introduce a valid price");
+            wrongLabels.get(6).setBounds(430,750,440,30);
+            wrongLabels.get(7).setText("*please introduce valid details");
+            wrongLabels.get(7).setBounds(430,750,440,30);
+            wrongLabels.get(8).setText("*please select a vacation package");
+            wrongLabels.get(8).setBounds(430,750,440,30);
+            wrongLabels.get(9).setText("*please select a destination");
+            wrongLabels.get(9).setBounds(60,730,440,30);
         }
 
         /**
@@ -219,9 +250,10 @@ package org.example.presentation.view;
             for(int i=nr-1;i>=0;i--)
                 tableModelDestinations.removeRow(i);
 
-            Object[] values= new Object[1];
+            Object[] values= new Object[2];
             for (int i=0;i< data.size();i++) {
-                values[0] = data.get(i).getName();
+                values[0] = data.get(i).getId();
+                values[1] = data.get(i).getName();
                 tableModelDestinations.addRow(values);
             }
         }
@@ -232,16 +264,19 @@ package org.example.presentation.view;
             for(int i=nr-1;i>=0;i--)
                 tableModelPackages.removeRow(i);
 
-            Object[] values= new Object[7];
+            Object[] values= new Object[10];
             for (int i=0;i< data.size();i++) {
                 VacationPackage vacationPackage= data.get(i);
-                values[0] = vacationPackage.getVacationDestination().getName();
+                values[0] = vacationPackage.getId();
                 values[1]=vacationPackage.getName();
                 values[2]=vacationPackage.getStartDate();
                 values[3]=vacationPackage.getEndDate();
                 values[4]=vacationPackage.getMaxNrPeople();
                 values[5]=vacationPackage.getPrice();
-                values[6]=vacationPackage.getStatus();
+                values[6]=vacationPackage.getDetails();
+                values[7]=vacationPackage.getVacationDestination().getName();
+                values[8]=vacationPackage.getStatus();
+                values[9] = vacationPackage.getVacationDestination().getId();
                 tableModelPackages.addRow(values);
             }
         }
@@ -262,26 +297,32 @@ package org.example.presentation.view;
         }
 
 
-//        public void updateFieldsToEdit(int row, boolean filled)
-//        {
-//            if(filled)
-//            {
-//                fields.get(0).setText((String)(clientsTable.getValueAt(row,1)));
-//                fields.get(1).setText((String)(clientsTable.getValueAt(row,2)));
-//                fields.get(2).setText((String)(clientsTable.getValueAt(row,3)));
-//                fields.get(3).setText((String)(clientsTable.getValueAt(row,4)));
-//                fields.get(4).setText((String)(clientsTable.getValueAt(row,5)));
-//                fields.get(5).setText(String.valueOf(clientsTable.getValueAt(row,0)));
-//            }
-//            else
-//            {
-//                fields.get(0).setText(null);
-//                fields.get(1).setText(null);
-//                fields.get(2).setText(null);
-//                fields.get(3).setText(null);
-//                fields.get(4).setText(null);
-//                fields.get(5).setText(null);
-//            }
-//        }
+        public void updateFieldsToEdit(int row, boolean filled)
+        {
+            if(filled)
+            {
+                fields.get(1).setText((String)(packagesTable.getValueAt(row,1)));
+                fields.get(2).setText((String)(packagesTable.getValueAt(row,2)));
+                fields.get(3).setText((String)(packagesTable.getValueAt(row,3)));
+                fields.get(4).setText(String.valueOf(packagesTable.getValueAt(row,4)));
+                fields.get(5).setText(String.valueOf(packagesTable.getValueAt(row,5)));
+                fields.get(6).setText((String)(packagesTable.getValueAt(row,6)));
+                fields.get(7).setText(String.valueOf(packagesTable.getValueAt(row,9)));
+                fields.get(8).setText(String.valueOf(packagesTable.getValueAt(row,0)));
+            }
+            else
+            {
+                fields.get(0).setText(null);
+                fields.get(1).setText(null);
+                fields.get(2).setText(null);
+                fields.get(3).setText(null);
+                fields.get(4).setText(null);
+                fields.get(5).setText(null);
+                fields.get(6).setText(null);
+                fields.get(7).setText(null);
+                fields.get(8).setText(null);
+            }
+        }
+
 
     }

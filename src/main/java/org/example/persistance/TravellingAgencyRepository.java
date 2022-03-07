@@ -88,4 +88,111 @@ public class TravellingAgencyRepository {
         em.getTransaction().commit();
         em.close();
     }
+
+    public void deleteVacationPackageById(long package_id){
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        try{
+            em.createQuery(
+                            "DELETE FROM VacationPackage p WHERE p.id= :id")
+                    .setParameter("id",package_id)
+                            .executeUpdate();
+        }
+        catch(NoResultException e){
+            System.out.println("err");
+        }
+        finally{
+            em.getTransaction().commit();
+            em.close();
+        }
+    }
+
+    private void deleteVacationPackageByDestinationId(long destination_id){
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        try{
+            em.createQuery(
+                            "DELETE FROM VacationPackage p WHERE p.vacationDestination.id= :id")
+                    .setParameter("id",destination_id)
+                    .executeUpdate();
+        }
+        catch(NoResultException e){
+            System.out.println("err");
+        }
+        finally{
+            em.getTransaction().commit();
+            em.close();
+        }
+    }
+
+    public void deleteVacationDestinationById(long destination_id){
+        this.deleteVacationPackageByDestinationId(destination_id);
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        try{
+            em.createQuery(
+                            "DELETE FROM VacationDestination d WHERE d.id= :id")
+                    .setParameter("id",destination_id)
+                    .executeUpdate();
+        }
+        catch(NoResultException e){
+            System.out.println("err");
+        }
+        finally{
+            em.getTransaction().commit();
+            em.close();
+        }
+    }
+
+    public void updateVacationPackage(String name, String startDate, String endDate, int nrPeople, float price, String details, long packageId){
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        try{
+            em.createQuery(
+                            "UPDATE VacationPackage p set p.name= :name, p.startDate = :startDate, p.endDate= :endDate, p.maxNrPeople= :nrPeople, p.price= :price, p.details= :details where p.id= :id")
+                    .setParameter("name",name)
+                    .setParameter("startDate",startDate)
+                    .setParameter("endDate",endDate)
+                    .setParameter("nrPeople",nrPeople)
+                    .setParameter("price",price)
+                    .setParameter("details",details)
+                    .setParameter("id",packageId)
+                    .executeUpdate();
+        }
+        catch(NoResultException e){
+            System.out.println("err");
+        }
+        finally{
+            em.getTransaction().commit();
+            em.close();
+        }
+    }
+
+    public void addVacationPackage(VacationPackage vacationPackage){
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        em.persist(vacationPackage);
+        em.getTransaction().commit();
+        em.close();
+    }
+
+    public VacationDestination getDestinationById(long id){
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+
+        try{
+            return em.createQuery(
+                            "SELECT d from VacationDestination d WHERE d.id= :id", VacationDestination.class)
+                    .setParameter("id",id)
+                            .getSingleResult();
+        }
+        catch(NoResultException e){
+            System.out.println("err");
+            return null;
+        }
+        finally{
+            em.getTransaction().commit();
+            em.close();
+        }
+    }
 }
