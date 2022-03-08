@@ -1,5 +1,9 @@
 package org.example.presentation.view;
 
+import org.example.presentation.controller.LogInController;
+import org.example.presentation.controller.RegularUserController;
+import org.example.presentation.controller.TravellingAgencyController;
+
 import javax.swing.*;
 
 /**
@@ -16,7 +20,7 @@ public class MainFrame extends JFrame {
      * Creates a new instance of MainFrame.
      * @param title the title of the frame
      */
-    public MainFrame(String title)
+    public MainFrame(String title, TravellingAgencyController travellingAgencyController, RegularUserController regularUserController, LogInController logInController)
     {
         super(title);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,14 +29,17 @@ public class MainFrame extends JFrame {
         this.setVisible(true);
         this.setResizable(false);
         panels = new JPanel[4];
-        panels[0]=new LogInView(screenHeight, screenWidth);
-        panels[1]=new RegisterView(screenHeight, screenWidth);
-        panels[2]=new TravellingAgencyView(screenHeight, screenWidth);
-        panels[3]=new RegularUserView(screenHeight, screenWidth);
-        //panels[2]= new OrderViewPanel(screenHeight,screenWidth);
+        panels[0]=new LogInView(screenHeight, screenWidth, logInController, this);
+        panels[1]=new RegisterView(screenHeight, screenWidth, regularUserController, this);
+        panels[2]=new TravellingAgencyView(screenHeight, screenWidth, travellingAgencyController);
+        panels[3]=new RegularUserView(screenHeight, screenWidth, regularUserController);
         this.setContentPane(panels[0]);
         this.revalidate();
         this.repaint();
+
+        logInController.addMainFrame(this);
+        travellingAgencyController.addMainFrame(this);
+        regularUserController.addMainFrame(this);
     }
 
     /**

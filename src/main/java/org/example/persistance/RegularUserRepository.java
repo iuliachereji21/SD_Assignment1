@@ -1,6 +1,7 @@
 package org.example.persistance;
 
 import org.example.business.model.RegularUser;
+import org.example.business.model.VacationDestination;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -32,5 +33,32 @@ public class RegularUserRepository {
             em.getTransaction().commit();
             em.close();
         }
+    }
+
+    public RegularUser findUserByEmail(String email){
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+
+        try{
+            return em.createQuery(
+                            "SELECT u from RegularUser u WHERE u.email= :email", RegularUser.class)
+                    .setParameter("email",email)
+                    .getSingleResult();
+        }
+        catch(NoResultException e){
+            System.out.println("err");
+            return null;
+        }
+        finally{
+            em.getTransaction().commit();
+            em.close();
+        }
+    }
+    public void addRegularUser(RegularUser user){
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        em.persist(user);
+        em.getTransaction().commit();
+        em.close();
     }
 }

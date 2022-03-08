@@ -1,11 +1,16 @@
 package org.example.presentation.view;
 
 import org.example.App;
+import org.example.business.model.RegularUser;
+import org.example.business.model.TravellingAgency;
+import org.example.presentation.controller.LogInController;
+import org.example.presentation.controller.TravellingAgencyController;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -22,15 +27,19 @@ public class LogInView extends JPanel {
     private int nrWrongLabels;
     /** the list of labels which will be used for showing error messages */
     public ArrayList<JLabel> wrongLabels;
+    private LogInController logInController;
+    private MainFrame mainFrame;
 
     /**
      * Creates a new instance of ClientsViewPanel.
      * @param height height of the panel
      * @param width width of the panel
      */
-    public LogInView(int height, int width)
+    public LogInView(int height, int width, LogInController logInController, MainFrame mainFrame)
     {
         super();
+        this.logInController=logInController;
+        this.mainFrame=mainFrame;
         this.setBounds(0,0, height, width);
         this.setLayout(null);
         this.setBackground(Color.DARK_GRAY);
@@ -45,6 +54,7 @@ public class LogInView extends JPanel {
             button.setBorder(BorderFactory.createLineBorder(Color.WHITE,1));
             button.setForeground(Color.WHITE);
             button.setFont(new Font("TimesRoman",20,20));
+            button.addActionListener(new ButtonsListenerLogIn(this,logInController, mainFrame));
             buttons.add(button);
             this.add(button);
         }
@@ -148,5 +158,37 @@ public class LogInView extends JPanel {
             wrongLabels.get(nrOfTheLabel).setVisible(visible);
     }
 
+    class ButtonsListenerLogIn implements ActionListener {
+        private LogInView view;
+        private LogInController logInController;
+        private MainFrame mainFrame;
+        public ButtonsListenerLogIn(LogInView view, LogInController logInController, MainFrame mainFrame){
+            super();
+            this.view=view;
+            this.logInController=logInController;
+            this.mainFrame=mainFrame;
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object event=e.getSource(); int row; view.setWrongLabelVisible(false, 0,true); int result;
+            if(event==view.buttons.get(0)) //log in
+            {
+                String email = view.fields.get(0).getText();
+                String password = view.fields.get(1).getText();
+
+                if(email.contains("@agency.com")){
+                    logInController.logInAgency(email, password);
+                }
+                else{
+                    logInController.logInRegularUser(email, password);
+                }
+            }
+            else
+            if(event==view.buttons.get(1)) //register
+            {
+                mainFrame.setPanel(1);
+            }
+        }
+    }
 
 }

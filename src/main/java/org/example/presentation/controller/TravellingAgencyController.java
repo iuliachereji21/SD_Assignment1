@@ -6,6 +6,7 @@ import org.example.business.model.VacationDestination;
 import org.example.business.model.VacationPackage;
 import org.example.business.service.RegularUserService;
 import org.example.business.service.TravellingAgencyService;
+import org.example.presentation.view.LogInView;
 import org.example.presentation.view.MainFrame;
 import org.example.presentation.view.TravellingAgencyView;
 
@@ -21,14 +22,16 @@ public class TravellingAgencyController {
     private MainFrame mainFrame;
     private TravellingAgencyView travellingAgencyView;
 
-    public TravellingAgencyController(MainFrame mainFrame){
+    public TravellingAgencyController(){
         this.travellingAgencyService=new TravellingAgencyService();
         this.travellingAgency=null;
+    }
+
+    public void addMainFrame(MainFrame mainFrame){
         this.mainFrame=mainFrame;
         this.travellingAgencyView=(TravellingAgencyView) mainFrame.panels[2];
-        for(int i=0;i<travellingAgencyView.getNrButtons();i++)
-            travellingAgencyView.addButtonListener(new TravellingAgencyController.ButtonsListenerTravellingAgency(), i);
     }
+
     public TravellingAgency findAgencyByEmailAndPassword(String email, String password){
         this.travellingAgency = this.travellingAgencyService.findAgencyByEmailAndPassword(email, password);
 
@@ -48,123 +51,70 @@ public class TravellingAgencyController {
         return new ArrayList<>(this.travellingAgencyService.getVacationPackages(travellingAgency));
     }
 
-    class ButtonsListenerTravellingAgency implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object event=e.getSource(); int row; travellingAgencyView.setWrongLabelVisible(false, 0,true); int result;
-            if(event==travellingAgencyView.buttons.get(0)) //log out
-            {
+    public void logOut(){
+        this.travellingAgency=null;
+        mainFrame.setPanel(0);
+    }
 
-            }
-            else
-            if(event==travellingAgencyView.buttons.get(2)) //delete destination
-            {
-                if((row=travellingAgencyView.destinationsTable.getSelectedRow())>=0){
-                    long destination_id = (long)travellingAgencyView.destinationsTable.getValueAt(row,0);
-                    travellingAgencyService.deleteVacationDestinationById(destination_id);
-                    travellingAgencyView.updateTableDestinations(TravellingAgencyController.this.getVacationDestinations(travellingAgency));
-                    travellingAgencyView.updateTablePackages(TravellingAgencyController.this.getVacationPackages(travellingAgency));
-                }
-                else travellingAgencyView.setWrongLabelVisible(true,9,false);
-            }
-            else
-            if(event==travellingAgencyView.buttons.get(3)) //add destination
-            {
-                VacationDestination destination = travellingAgencyService.addVacationDestination(travellingAgencyView.fields.get(0).getText(),travellingAgency);
-                if(destination == null)
-                    travellingAgencyView.setWrongLabelVisible(true,0,false);
-                travellingAgencyView.updateTableDestinations(TravellingAgencyController.this.getVacationDestinations(travellingAgency));
+    public void addVacationDestination(String name){
+        VacationDestination destination = travellingAgencyService.addVacationDestination(name, travellingAgency);
 
-            }
+        if(destination == null)
+            travellingAgencyView.setWrongLabelVisible(true,0,false);
+        travellingAgencyView.updateTableDestinations(TravellingAgencyController.this.getVacationDestinations(travellingAgency));
+    }
 
-            else
-            if(event==travellingAgencyView.buttons.get(5)) //edit package
-            {
-                if((row=travellingAgencyView.packagesTable.getSelectedRow())>=0){
-                    long package_id = (long)travellingAgencyView.packagesTable.getValueAt(row,0);
-                    travellingAgencyView.updateFieldsToEdit(row,true);
-                }
-                else travellingAgencyView.setWrongLabelVisible(true,8,false);
-            }
-            else
-            if(event==travellingAgencyView.buttons.get(6)) //delete package
-            {
-                if((row=travellingAgencyView.packagesTable.getSelectedRow())>=0){
-                    long package_id = (long)travellingAgencyView.packagesTable.getValueAt(row,0);
-                    travellingAgencyService.deleteVacationPackageById(package_id);
-                    travellingAgencyView.updateTablePackages(TravellingAgencyController.this.getVacationPackages(travellingAgency));
-                }
-                else travellingAgencyView.setWrongLabelVisible(true,8,false);
-            }
-            else
-            if(event==travellingAgencyView.buttons.get(7)) //add package
-            {
-                if((row=travellingAgencyView.destinationsTable.getSelectedRow())>=0){
-                    String name = travellingAgencyView.fields.get(1).getText();
-                    String start_date = travellingAgencyView.fields.get(2).getText();
-                    String end_date = travellingAgencyView.fields.get(3).getText();
-                    String nr_people = travellingAgencyView.fields.get(4).getText();
-                    String price = travellingAgencyView.fields.get(5).getText();
-                    String details = travellingAgencyView.fields.get(6).getText();
-                    long destination_id = (long)travellingAgencyView.destinationsTable.getValueAt(row,0);
-                    try{
-                        travellingAgencyService.addVacationPackage(name, start_date, end_date, nr_people,price,details, destination_id, travellingAgency);
-                        travellingAgencyView.updateTablePackages(TravellingAgencyController.this.getVacationPackages(travellingAgency));
-                    }
-                    catch (Exception ex){
-                        if(ex.getMessage().equals("name"))
-                            travellingAgencyView.setWrongLabelVisible(true,2,false);
-                        if(ex.getMessage().equals("startDate"))
-                            travellingAgencyView.setWrongLabelVisible(true,3,false);
-                        if(ex.getMessage().equals("endDate"))
-                            travellingAgencyView.setWrongLabelVisible(true,4,false);
-                        if(ex.getMessage().equals("nrPeople"))
-                            travellingAgencyView.setWrongLabelVisible(true,5,false);
-                        if(ex.getMessage().equals("price"))
-                            travellingAgencyView.setWrongLabelVisible(true,6,false);
-                        if(ex.getMessage().equals("details"))
-                            travellingAgencyView.setWrongLabelVisible(true,7,false);
+    public void deleteVacationPackage(long package_id){
+        travellingAgencyService.deleteVacationPackageById(package_id);
+        travellingAgencyView.updateTablePackages(TravellingAgencyController.this.getVacationPackages(travellingAgency));
+    }
 
-                    }
+    public void addVacationPackage(String name, String startDate, String endDate, String nrPeople, String price, String details, long destinationId){
+        try{
+            travellingAgencyService.addVacationPackage(name, startDate, endDate, nrPeople,price,details, destinationId, travellingAgency);
+            travellingAgencyView.updateTablePackages(TravellingAgencyController.this.getVacationPackages(travellingAgency));
+        }
+        catch (Exception ex){
+            if(ex.getMessage().equals("name"))
+                travellingAgencyView.setWrongLabelVisible(true,2,false);
+            if(ex.getMessage().equals("startDate"))
+                travellingAgencyView.setWrongLabelVisible(true,3,false);
+            if(ex.getMessage().equals("endDate"))
+                travellingAgencyView.setWrongLabelVisible(true,4,false);
+            if(ex.getMessage().equals("nrPeople"))
+                travellingAgencyView.setWrongLabelVisible(true,5,false);
+            if(ex.getMessage().equals("price"))
+                travellingAgencyView.setWrongLabelVisible(true,6,false);
+            if(ex.getMessage().equals("details"))
+                travellingAgencyView.setWrongLabelVisible(true,7,false);
 
-                    //travellingAgencyView.fields.get(1).setText((String)(travellingAgencyView.destinationsTable.getValueAt(row,1)));
-                    //travellingAgencyView.fields.get(7).setText((String)(travellingAgencyView.destinationsTable.getValueAt(row,0)));
-                }
-                else travellingAgencyView.setWrongLabelVisible(true,1,false);
-
-            }
-            else
-            if(event==travellingAgencyView.buttons.get(8)) //save package
-            {
-                String name = travellingAgencyView.fields.get(1).getText();
-                String start_date = travellingAgencyView.fields.get(2).getText();
-                String end_date = travellingAgencyView.fields.get(3).getText();
-                String nr_people = travellingAgencyView.fields.get(4).getText();
-                String price = travellingAgencyView.fields.get(5).getText();
-                String details = travellingAgencyView.fields.get(6).getText();
-                long package_id = Long.parseLong(travellingAgencyView.fields.get(8).getText());
-                try{
-                    travellingAgencyService.updateVacationPackage(name, start_date, end_date, nr_people,price,details, package_id, travellingAgency);
-                    travellingAgencyView.updateTablePackages(TravellingAgencyController.this.getVacationPackages(travellingAgency));
-                }
-                catch (Exception ex){
-                    if(ex.getMessage().equals("name"))
-                        travellingAgencyView.setWrongLabelVisible(true,2,false);
-                    if(ex.getMessage().equals("startDate"))
-                        travellingAgencyView.setWrongLabelVisible(true,3,false);
-                    if(ex.getMessage().equals("endDate"))
-                        travellingAgencyView.setWrongLabelVisible(true,4,false);
-                    if(ex.getMessage().equals("nrPeople"))
-                        travellingAgencyView.setWrongLabelVisible(true,5,false);
-                    if(ex.getMessage().equals("price"))
-                        travellingAgencyView.setWrongLabelVisible(true,6,false);
-                    if(ex.getMessage().equals("details"))
-                        travellingAgencyView.setWrongLabelVisible(true,7,false);
-
-                }
-
-            }
         }
     }
 
+    public void updateVacationPackage(String name, String startDate, String endDate, String nrPeople, String price, String details, long packageId){
+        try{
+            travellingAgencyService.updateVacationPackage(name, startDate, endDate, nrPeople,price,details, packageId, travellingAgency);
+            travellingAgencyView.updateTablePackages(TravellingAgencyController.this.getVacationPackages(travellingAgency));
+        }
+        catch (Exception ex){
+            if(ex.getMessage().equals("name"))
+                travellingAgencyView.setWrongLabelVisible(true,2,false);
+            if(ex.getMessage().equals("startDate"))
+                travellingAgencyView.setWrongLabelVisible(true,3,false);
+            if(ex.getMessage().equals("endDate"))
+                travellingAgencyView.setWrongLabelVisible(true,4,false);
+            if(ex.getMessage().equals("nrPeople"))
+                travellingAgencyView.setWrongLabelVisible(true,5,false);
+            if(ex.getMessage().equals("price"))
+                travellingAgencyView.setWrongLabelVisible(true,6,false);
+            if(ex.getMessage().equals("details"))
+                travellingAgencyView.setWrongLabelVisible(true,7,false);
+
+        }
+    }
+    public void deleteVacationDestination(long destination_id){
+        travellingAgencyService.deleteVacationDestinationById(destination_id);
+        travellingAgencyView.updateTableDestinations(TravellingAgencyController.this.getVacationDestinations(travellingAgency));
+        travellingAgencyView.updateTablePackages(TravellingAgencyController.this.getVacationPackages(travellingAgency));
+    }
 }

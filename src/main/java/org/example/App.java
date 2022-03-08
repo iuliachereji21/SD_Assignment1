@@ -23,10 +23,14 @@ public class App
 
     public static void main( String[] args )
     {
-        MainFrame mainFrame= new MainFrame("Booking");
+
+
         RegularUserController regularUserController = new RegularUserController();
-        TravellingAgencyController travellingAgencyController = new TravellingAgencyController(mainFrame);
-        LogInController logInController= new LogInController(mainFrame, regularUserController, travellingAgencyController);
+        TravellingAgencyController travellingAgencyController = new TravellingAgencyController();
+        LogInController logInController= new LogInController(regularUserController, travellingAgencyController);
+
+        MainFrame mainFrame= new MainFrame("Booking",travellingAgencyController, regularUserController, logInController);
+
 
 //        RegularUser regularUser = new RegularUser("Ana Iepure","ana@yahoo.com","0000");
 //        TravellingAgency travellingAgency = new TravellingAgency("veltravel", "veltravel@agency.com","0000");

@@ -21,7 +21,7 @@ public class RegularUser {
     @Column
     private String password;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name="regular_user_vacation_package",
             joinColumns = @JoinColumn(name="regular_user_id"),
             inverseJoinColumns = @JoinColumn(name="vacation_package_id")

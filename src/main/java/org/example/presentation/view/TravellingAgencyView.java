@@ -2,16 +2,14 @@ package org.example.presentation.view;
 
         import org.example.business.model.VacationDestination;
         import org.example.business.model.VacationPackage;
+        import org.example.presentation.controller.TravellingAgencyController;
 
         import javax.swing.*;
         import javax.swing.border.Border;
         import javax.swing.table.DefaultTableModel;
-        import javax.swing.table.TableColumnModel;
         import java.awt.*;
+        import java.awt.event.ActionEvent;
         import java.awt.event.ActionListener;
-        import java.beans.PropertyDescriptor;
-        import java.lang.reflect.Field;
-        import java.lang.reflect.Method;
         import java.util.ArrayList;
 
     public class TravellingAgencyView extends JPanel {
@@ -29,15 +27,17 @@ package org.example.presentation.view;
         private int nrWrongLabels;
         /** the list of labels which will be used for showing error messages */
         public ArrayList<JLabel> wrongLabels;
+        private TravellingAgencyController travellingAgencyController;
 
         /**
          * Creates a new instance of ClientsViewPanel.
          * @param height height of the panel
          * @param width width of the panel
          */
-        public TravellingAgencyView(int height, int width)
+        public TravellingAgencyView(int height, int width, TravellingAgencyController travellingAgencyController)
         {
             super();
+            this.travellingAgencyController=travellingAgencyController;
             this.setBounds(0,0, height, width);
             this.setLayout(null);
             this.setBackground(Color.DARK_GRAY);
@@ -52,6 +52,7 @@ package org.example.presentation.view;
                 button.setBorder(BorderFactory.createLineBorder(Color.WHITE,1));
                 button.setForeground(Color.WHITE);
                 button.setFont(new Font("TimesRoman",20,20));
+                button.addActionListener(new ButtonsListenerTravellingAgency(this,travellingAgencyController));
                 buttons.add(button);
                 this.add(button);
             }
@@ -220,6 +221,22 @@ package org.example.presentation.view;
             wrongLabels.get(8).setBounds(430,750,440,30);
             wrongLabels.get(9).setText("*please select a destination");
             wrongLabels.get(9).setBounds(60,730,440,30);
+
+            int nrDataLabels = 2;
+            JLabel[] dataLabels = new JLabel[nrDataLabels];
+            for(int i = 0; i< nrDataLabels; i++)
+            {
+                dataLabels[i]=new JLabel();
+                dataLabels[i].setFont(new Font("TimesRoman",20,20));
+                dataLabels[i].setForeground(Color.WHITE);
+                this.add(dataLabels[i]);
+                dataLabels[i].setVisible(true);
+            }
+
+            dataLabels[0].setText("Vacation Destinations");
+            dataLabels[0].setBounds(100,60,200,30);
+            dataLabels[1].setText("Vacation Packages");
+            dataLabels[1].setBounds(800,60,200,30);
         }
 
         /**
@@ -324,5 +341,84 @@ package org.example.presentation.view;
             }
         }
 
+        class ButtonsListenerTravellingAgency implements ActionListener {
+            private TravellingAgencyView view;
+            private TravellingAgencyController controller;
+            public ButtonsListenerTravellingAgency(TravellingAgencyView view, TravellingAgencyController controller){
+                super();
+                this.view=view;
+                this.controller=controller;
+            }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object event=e.getSource(); int row; TravellingAgencyView.this.setWrongLabelVisible(false, 0,true); int result;
+                if(event==view.buttons.get(0)) //log out
+                {
+                    controller.logOut();
+
+                }
+                else
+                if(event==view.buttons.get(2)) //delete destination
+                {
+                    if((row=view.destinationsTable.getSelectedRow())>=0){
+                        long destination_id = (long)view.destinationsTable.getValueAt(row,0);
+                        controller.deleteVacationDestination(destination_id);
+                    }
+                    else view.setWrongLabelVisible(true,9,false);
+                }
+                else
+                if(event==view.buttons.get(3)) //add destination
+                {
+                    controller.addVacationDestination(view.fields.get(0).getText());
+                }
+//
+                else
+                if(event==TravellingAgencyView.this.buttons.get(5)) //edit package
+                {
+                    if((row=view.packagesTable.getSelectedRow())>=0){
+                        long package_id = (long)view.packagesTable.getValueAt(row,0);
+                        view.updateFieldsToEdit(row,true);
+                    }
+                    else view.setWrongLabelVisible(true,8,false);
+                }
+                else
+                if(event==view.buttons.get(6)) //delete package
+                {
+                    if((row=view.packagesTable.getSelectedRow())>=0){
+                        long package_id = (long)view.packagesTable.getValueAt(row,0);
+                        controller.deleteVacationPackage(package_id);
+                    }
+                    else view.setWrongLabelVisible(true,8,false);
+                }
+                else
+                if(event==TravellingAgencyView.this.buttons.get(7)) //add package
+                {
+                    if((row=view.destinationsTable.getSelectedRow())>=0){
+                        String name = view.fields.get(1).getText();
+                        String start_date = view.fields.get(2).getText();
+                        String end_date = view.fields.get(3).getText();
+                        String nr_people = view.fields.get(4).getText();
+                        String price = view.fields.get(5).getText();
+                        String details = view.fields.get(6).getText();
+                        long destination_id = (long)view.destinationsTable.getValueAt(row,0);
+                        controller.addVacationPackage(name, start_date, end_date, nr_people,price,details, destination_id);
+                    }
+                    else view.setWrongLabelVisible(true,1,false);
+
+                }
+                else
+                if(event==view.buttons.get(8)) //save package
+                {
+                    String name = view.fields.get(1).getText();
+                    String start_date = view.fields.get(2).getText();
+                    String end_date = view.fields.get(3).getText();
+                    String nr_people = view.fields.get(4).getText();
+                    String price = view.fields.get(5).getText();
+                    String details = view.fields.get(6).getText();
+                    long package_id = Long.parseLong(view.fields.get(8).getText());
+                    controller.updateVacationPackage(name, start_date, end_date, nr_people,price,details, package_id);
+                }
+            }
+        }
 
     }

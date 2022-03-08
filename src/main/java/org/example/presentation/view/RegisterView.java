@@ -1,7 +1,11 @@
 package org.example.presentation.view;
 
+import org.example.presentation.controller.LogInController;
+import org.example.presentation.controller.RegularUserController;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
@@ -15,19 +19,23 @@ public class RegisterView extends JPanel {
     private int nrWrongLabels;
     /** the list of labels which will be used for showing error messages */
     public ArrayList<JLabel> wrongLabels;
+    private RegularUserController regularUserController;
+    private MainFrame mainFrame;
 
     /**
      * Creates a new instance of ClientsViewPanel.
      * @param height height of the panel
      * @param width width of the panel
      */
-    public RegisterView(int height, int width)
+    public RegisterView(int height, int width, RegularUserController regularUserController, MainFrame mainFrame)
     {
         super();
+        this.mainFrame=mainFrame;
+        this.regularUserController=regularUserController;
         this.setBounds(0,0, height, width);
         this.setLayout(null);
         this.setBackground(Color.DARK_GRAY);
-        nrButtons=1;
+        nrButtons=2;
         buttons=new ArrayList<>();
 
         for(int i=0;i<nrButtons;i++)
@@ -38,12 +46,15 @@ public class RegisterView extends JPanel {
             button.setBorder(BorderFactory.createLineBorder(Color.WHITE,1));
             button.setForeground(Color.WHITE);
             button.setFont(new Font("TimesRoman",20,20));
+            button.addActionListener(new ButtonsListenerRegister(this,regularUserController, mainFrame));
             buttons.add(button);
             this.add(button);
         }
 
-        buttons.get(0).setText("REGISTER");
-        buttons.get(0).setBounds(850,550, 150, 50);
+        buttons.get(0).setText("LOG IN");
+        buttons.get(0).setBounds(690,550, 150, 50);
+        buttons.get(1).setText("SIGN UP");
+        buttons.get(1).setBounds(850, 550, 150, 50);
 
 
         int nrDataLabels = 4;
@@ -95,7 +106,7 @@ public class RegisterView extends JPanel {
         fields.get(2).setBounds(620,405,440,45);
         fields.get(3).setBounds(620,485,440,45);
 
-        nrWrongLabels=1;
+        nrWrongLabels=5;
         wrongLabels=new ArrayList<>();
 
         for(int i=0;i<nrWrongLabels;i++)
@@ -109,8 +120,16 @@ public class RegisterView extends JPanel {
             wrongLabel.setVisible(false);
         }
 
-        wrongLabels.get(0).setText("*wrong email or password");
+        wrongLabels.get(0).setText("*please insert a valid name");
         wrongLabels.get(0).setBounds(1120,330,440,30);
+        wrongLabels.get(1).setText("*please insert a valid password");
+        wrongLabels.get(1).setBounds(1120,330,440,30);
+        wrongLabels.get(2).setText("*passwords don't match");
+        wrongLabels.get(2).setBounds(1120,330,440,30);
+        wrongLabels.get(3).setText("*please insert a valid email");
+        wrongLabels.get(3).setBounds(1120,330,440,30);
+        wrongLabels.get(4).setText("*email already exists");
+        wrongLabels.get(4).setBounds(1120,330,440,30);
     }
 
     /**
@@ -151,5 +170,47 @@ public class RegisterView extends JPanel {
             wrongLabels.get(nrOfTheLabel).setVisible(visible);
     }
 
+    class ButtonsListenerRegister implements ActionListener {
+        private RegisterView view;
+        private RegularUserController controller;
+        private MainFrame mainFrame;
+        public ButtonsListenerRegister(RegisterView view, RegularUserController controller, MainFrame mainFrame){
+            super();
+            this.view=view;
+            this.controller=controller;
+            this.mainFrame=mainFrame;
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object event=e.getSource(); int row; view.setWrongLabelVisible(false, 0,true); int result;
+            if(event==view.buttons.get(0)) //log in
+            {
+                mainFrame.setPanel(0);
+            }
+            else
+            if(event==view.buttons.get(1)) //sign up
+            {
+                String name = view.fields.get(0).getText();
+                String email = view.fields.get(1).getText();
+                String password = view.fields.get(2).getText();
+                String repeatedPassword=view.fields.get(3).getText();
 
+                try{
+                    controller.addRegularUser(name, email, password, repeatedPassword);
+                }
+                catch (Exception ex){
+                    if(ex.getMessage().equals("name"))
+                        view.setWrongLabelVisible(true,0,false);
+                    if(ex.getMessage().equals("password"))
+                        view.setWrongLabelVisible(true,1,false);
+                    if(ex.getMessage().equals("repeatedPassword"))
+                        view.setWrongLabelVisible(true,2,false);
+                    if(ex.getMessage().equals("email"))
+                        view.setWrongLabelVisible(true,3,false);
+                    if(ex.getMessage().equals("email exists"))
+                        view.setWrongLabelVisible(true,4,false);
+                }
+            }
+        }
+    }
 }

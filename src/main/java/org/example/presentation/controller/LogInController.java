@@ -14,43 +14,30 @@ public class LogInController {
     private RegularUserController regularUserController;
     private TravellingAgencyController travellingAgencyController;
 
-    public LogInController(MainFrame mainFrame, RegularUserController regularUserController, TravellingAgencyController travellingAgencyController)
+    public LogInController(RegularUserController regularUserController, TravellingAgencyController travellingAgencyController)
     {
         this.regularUserController=regularUserController;
         this.travellingAgencyController=travellingAgencyController;
+
+    }
+
+    public void addMainFrame(MainFrame mainFrame){
         this.mainFrame=mainFrame;
         this.logInView=(LogInView) mainFrame.panels[0];
-        for(int i=0;i<logInView.getNrButtons();i++)
-            logInView.addButtonListener(new ButtonsListenerLogIn(), i);
     }
 
-    class ButtonsListenerLogIn implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object event=e.getSource(); int row; logInView.setWrongLabelVisible(false, 0,true); int result;
-            if(event==logInView.buttons.get(0)) //log in
-            {
-                String email = logInView.fields.get(0).getText();
-                String password = logInView.fields.get(1).getText();
-
-                if(email.contains("@agency.com")){
-                    TravellingAgency agency = travellingAgencyController.findAgencyByEmailAndPassword(email, password);
-                    if(agency==null)
-                        logInView.setWrongLabelVisible(true,0,false);
-                    else mainFrame.setPanel(2);
-                }
-                else{
-                    RegularUser user = regularUserController.findUserByEmailAndPassword(email, password);
-                    if(user==null)
-                        logInView.setWrongLabelVisible(true,0,false);
-                    else mainFrame.setPanel(3);
-                }
-            }
-            else
-                if(event==logInView.buttons.get(1)) //register
-                {
-                    mainFrame.setPanel(1);
-                }
-        }
+    public void logInAgency(String email, String password){
+        TravellingAgency agency = travellingAgencyController.findAgencyByEmailAndPassword(email, password);
+        if(agency==null)
+            logInView.setWrongLabelVisible(true,0,false);
+        else mainFrame.setPanel(2);
     }
+
+    public void logInRegularUser(String email, String password){
+        RegularUser user = regularUserController.findUserByEmailAndPassword(email, password);
+        if(user==null)
+            logInView.setWrongLabelVisible(true,0,false);
+        else mainFrame.setPanel(3);
+    }
+
 }
