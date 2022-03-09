@@ -2,6 +2,7 @@ package org.example.persistance;
 
 import org.example.business.model.RegularUser;
 import org.example.business.model.VacationDestination;
+import org.example.business.model.VacationPackage;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -60,5 +61,22 @@ public class RegularUserRepository {
         em.persist(user);
         em.getTransaction().commit();
         em.close();
+    }
+
+    public void bookPackage(RegularUser user, VacationPackage vacationPackage){
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+
+        try{
+            em.merge(user);
+            em.merge(vacationPackage);
+        }
+        catch(NoResultException e){
+            System.out.println("err");
+        }
+        finally{
+            em.getTransaction().commit();
+            em.close();
+        }
     }
 }

@@ -60,4 +60,38 @@ public class RegularUserController {
         this.user=null;
         mainFrame.setPanel(0);
     }
+
+    public void bookPackage(long packageId){
+        VacationPackage vacationPackage = vacationPackageService.getPackageById(packageId);
+        if(vacationPackage!=null){
+            try{
+                regularUserService.bookPackage(user, vacationPackage);
+                regularUserView.updateTableAvailabePackages(this.getAvailablePackages());
+                regularUserView.updateTableBookedPackages(this.getBookedPackages(user));
+            }
+            catch (Exception e){
+                if(e.getMessage().equals("already booked"))
+                    regularUserView.setWrongLabelVisible(true,1, false);
+            }
+
+        }
+    }
+
+    public void filterAvailablePackages(String destination, String price, String startDate, String endDate){
+        try{
+            regularUserView.updateTableAvailabePackages(vacationPackageService.filterAvailablePackages(destination,price, startDate,endDate));
+        }
+        catch (Exception e){
+            if(e.getMessage().equals("price"))
+                regularUserView.setWrongLabelVisible(true,3, false);
+            if(e.getMessage().equals("start date"))
+                regularUserView.setWrongLabelVisible(true,4, false);
+            if(e.getMessage().equals("end date"))
+                regularUserView.setWrongLabelVisible(true,5, false);
+        }
+    }
+
+    public void getAllPackages(){
+        regularUserView.updateTableAvailabePackages(this.getAvailablePackages());
+    }
 }

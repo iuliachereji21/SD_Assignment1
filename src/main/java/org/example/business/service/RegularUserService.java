@@ -47,4 +47,17 @@ public class RegularUserService {
         regularUserRepository.addRegularUser(newUser);
         return newUser;
     }
+
+    public void bookPackage(RegularUser user, VacationPackage vacationPackage) throws Exception{
+        for(VacationPackage vp: user.getBookedVacationPackages()){
+            if (vp.getId()== vacationPackage.getId())
+                throw new Exception("already booked");
+        }
+
+        user.addVacationPackage(vacationPackage);
+        vacationPackage.addUser(user);
+
+        regularUserRepository.bookPackage(user, vacationPackage);
+
+    }
 }

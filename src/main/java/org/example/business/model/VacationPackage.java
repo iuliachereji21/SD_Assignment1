@@ -36,7 +36,7 @@ public class VacationPackage {
     @Column
     private int currentNrPeople;
 
-    @ManyToMany(mappedBy = "bookedVacationPackages")
+    @ManyToMany(mappedBy = "bookedVacationPackages", fetch = FetchType.EAGER)
     private List<RegularUser> usersThatBooked;
 
     @ManyToOne

@@ -45,7 +45,7 @@ public class RegularUserView extends JPanel {
         this.setBounds(0,0, height, width);
         this.setLayout(null);
         this.setBackground(Color.DARK_GRAY);
-        nrButtons=3;
+        nrButtons=4;
         buttons=new ArrayList<>();
 
         for(int i=0;i<nrButtons;i++)
@@ -67,6 +67,8 @@ public class RegularUserView extends JPanel {
         buttons.get(1).setBounds(550,645, 150, 50);
         buttons.get(2).setText("BOOK");
         buttons.get(2).setBounds(850, 645, 150, 50);
+        buttons.get(3).setText("VIEW ALL");
+        buttons.get(3).setBounds(550,845, 150, 50);
 
 
         int nrDataLabels = 6;
@@ -113,7 +115,7 @@ public class RegularUserView extends JPanel {
         fields.get(2).setBounds(210,745,300,40);
         fields.get(3).setBounds(210,795,300,40);
 
-        nrWrongLabels=1;
+        nrWrongLabels=6;
         wrongLabels=new ArrayList<>();
 
         for(int i=0;i<nrWrongLabels;i++)
@@ -127,8 +129,18 @@ public class RegularUserView extends JPanel {
             wrongLabel.setVisible(false);
         }
 
-        wrongLabels.get(0).setText("*wrong email or password");
-        wrongLabels.get(0).setBounds(1120,330,440,30);
+        wrongLabels.get(0).setText("*please select a package");
+        wrongLabels.get(0).setBounds(850,750,440,30);
+        wrongLabels.get(1).setText("*vacation package already booked");
+        wrongLabels.get(1).setBounds(850,750,440,30);
+        wrongLabels.get(2).setText("*please fill in the filters");
+        wrongLabels.get(2).setBounds(850,750,440,30);
+        wrongLabels.get(3).setText("*invalid price");
+        wrongLabels.get(3).setBounds(850,750,440,30);
+        wrongLabels.get(4).setText("*invalid start date");
+        wrongLabels.get(4).setBounds(850,750,440,30);
+        wrongLabels.get(5).setText("*invalid end date");
+        wrongLabels.get(5).setBounds(850,750,440,30);
 
         Border border = BorderFactory.createEmptyBorder();
 
@@ -320,12 +332,39 @@ public class RegularUserView extends JPanel {
             else
             if (event == view.buttons.get(1)) //filter
             {
-                
+                String destination = view.fields.get(0).getText();
+                String price = view.fields.get(1).getText();
+                String startDate = view.fields.get(2).getText();
+                String endDate = view.fields.get(3).getText();
+                if(destination == null || destination.equals(""))
+                    destination=null;
+                if(price == null || price.equals(""))
+                    price=null;
+                if(startDate == null || startDate.equals(""))
+                    startDate=null;
+                if(endDate == null || endDate.equals(""))
+                    endDate=null;
+
+                if(destination==null && price == null && startDate == null && endDate == null)
+                    view.setWrongLabelVisible(true,2,false);
+                else
+                    controller.filterAvailablePackages(destination, price, startDate, endDate);
+
             }
             else
             if (event == view.buttons.get(2)) //book
             {
-
+                if((row=view.availablePackagesTable.getSelectedRow())>=0){
+                    long package_id = (long)view.availablePackagesTable.getValueAt(row,0);
+                    controller.bookPackage(package_id);
+                }
+                else
+                    view.setWrongLabelVisible(true,0,false);
+            }
+            else
+            if (event == view.buttons.get(3)) //view all
+            {
+                controller.getAllPackages();
             }
         }
     }

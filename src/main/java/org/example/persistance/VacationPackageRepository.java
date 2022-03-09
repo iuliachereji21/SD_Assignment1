@@ -34,4 +34,24 @@ public class VacationPackageRepository {
     public ArrayList<VacationPackage> getBookedPackagesByUserId(long id){
         return null;
     }
+
+    public VacationPackage getVacationPackageById(long id){
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+
+        try{
+            return em.createQuery(
+                            "SELECT p from VacationPackage p WHERE p.id= :id", VacationPackage.class)
+                    .setParameter("id",id)
+                            .getSingleResult();
+        }
+        catch(NoResultException e){
+            System.out.println("err");
+            return null;
+        }
+        finally{
+            em.getTransaction().commit();
+            em.close();
+        }
+    }
 }
