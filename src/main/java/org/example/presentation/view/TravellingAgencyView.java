@@ -13,21 +13,14 @@ package org.example.presentation.view;
         import java.util.ArrayList;
 
     public class TravellingAgencyView extends JPanel {
-        private int nrButtons;
-        /** the list of buttons in the view. */
-        public ArrayList<JButton> buttons;
-        /** the table where the clients will be displayed */
-        public JTable destinationsTable;
-        public JTable packagesTable;
+        private ArrayList<JButton> buttons;
+        private JTable destinationsTable;
+        private JTable packagesTable;
         private DefaultTableModel tableModelDestinations;
         private DefaultTableModel tableModelPackages;
-        private int nrFields;
-        /** the list of text fields in the view. */
-        public ArrayList<JTextField> fields;
+        private ArrayList<JTextField> fields;
         private int nrWrongLabels;
-        /** the list of labels which will be used for showing error messages */
-        public ArrayList<JLabel> wrongLabels;
-        private TravellingAgencyController travellingAgencyController;
+        private ArrayList<JLabel> wrongLabels;
 
         /**
          * Creates a new instance of ClientsViewPanel.
@@ -37,14 +30,12 @@ package org.example.presentation.view;
         public TravellingAgencyView(int height, int width, TravellingAgencyController travellingAgencyController)
         {
             super();
-            this.travellingAgencyController=travellingAgencyController;
             this.setBounds(0,0, height, width);
             this.setLayout(null);
             this.setBackground(Color.DARK_GRAY);
-            nrButtons=9;
             buttons=new ArrayList<>();
 
-            for(int i=0;i<nrButtons;i++)
+            for(int i=0;i<9;i++)
             {
                 JButton button=new JButton();
                 button.setOpaque(false);
@@ -77,10 +68,9 @@ package org.example.presentation.view;
             buttons.get(8).setText("SAVE");
             buttons.get(8).setBounds(1160, 770, 150, 50);
 
-            nrFields=9;
             fields = new ArrayList<>();
 
-            for(int i=0;i<nrFields;i++)
+            for(int i=0;i<9;i++)
             {
                 JTextField field=new JTextField();
                 field.setFont(new Font("TimesRoman",20,20));
@@ -103,7 +93,6 @@ package org.example.presentation.view;
             fields.get(7).setVisible(false);
             fields.get(8).setBounds(1324,685,0,0);
             fields.get(8).setVisible(false);
-            //fields.get(5).setEditable(false);
 
 
             Border border = BorderFactory.createEmptyBorder();
@@ -239,28 +228,6 @@ package org.example.presentation.view;
             dataLabels[1].setBounds(800,60,200,30);
         }
 
-        /**
-         * attempts to add an action listener to one of the button of the panel.
-         * @param listener reference to the action listener.
-         * @param nrOfTheButton the index of the button in the buttons array.
-         */
-        public void addButtonListener(ActionListener listener, int nrOfTheButton)
-        {
-            if(nrOfTheButton<nrButtons)
-                buttons.get(nrOfTheButton).addActionListener(listener);
-        }
-
-        /**
-         * @return the number of buttons the panel contains.
-         */
-        public int getNrButtons() {
-            return nrButtons;
-        }
-
-        /**
-         * receives a list of objects and creates the header of the table by accessing the fields of the elements of data through reflection, and then adds entries in the table.
-         * @param data list of objects
-         */
         public void updateTableDestinations(ArrayList<VacationDestination> data)
         {
             int nr= tableModelDestinations.getRowCount();

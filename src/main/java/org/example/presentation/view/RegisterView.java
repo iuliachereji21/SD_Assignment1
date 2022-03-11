@@ -1,6 +1,5 @@
 package org.example.presentation.view;
 
-import org.example.presentation.controller.LogInController;
 import org.example.presentation.controller.RegularUserController;
 
 import javax.swing.*;
@@ -10,17 +9,11 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class RegisterView extends JPanel {
-    private int nrButtons;
-    /** the list of buttons in the view. */
-    public ArrayList<JButton> buttons;
-    private int nrFields;
-    /** the list of text fields in the view. */
-    public ArrayList<JTextField> fields;
+    private ArrayList<JButton> buttons;
+    private ArrayList<JTextField> fields;
     private int nrWrongLabels;
     /** the list of labels which will be used for showing error messages */
-    public ArrayList<JLabel> wrongLabels;
-    private RegularUserController regularUserController;
-    private MainFrame mainFrame;
+    private ArrayList<JLabel> wrongLabels;
 
     /**
      * Creates a new instance of ClientsViewPanel.
@@ -30,15 +23,12 @@ public class RegisterView extends JPanel {
     public RegisterView(int height, int width, RegularUserController regularUserController, MainFrame mainFrame)
     {
         super();
-        this.mainFrame=mainFrame;
-        this.regularUserController=regularUserController;
         this.setBounds(0,0, height, width);
         this.setLayout(null);
         this.setBackground(Color.DARK_GRAY);
-        nrButtons=2;
         buttons=new ArrayList<>();
 
-        for(int i=0;i<nrButtons;i++)
+        for(int i=0;i<2;i++)
         {
             JButton button=new JButton();
             button.setOpaque(false);
@@ -78,7 +68,6 @@ public class RegisterView extends JPanel {
         dataLabels[3].setText("Repeat password:");
         dataLabels[3].setBounds(400,490,180,30);
 
-        nrFields=4;
         fields = new ArrayList<>();
 
         for(int i=0;i<2;i++)
@@ -132,35 +121,6 @@ public class RegisterView extends JPanel {
         wrongLabels.get(4).setBounds(1120,330,440,30);
     }
 
-    /**
-     * attempts to add an action listener to one of the button of the panel.
-     * @param listener reference to the action listener.
-     * @param nrOfTheButton the index of the button in the buttons array.
-     */
-    public void addButtonListener(ActionListener listener, int nrOfTheButton)
-    {
-        if(nrOfTheButton<nrButtons)
-            buttons.get(nrOfTheButton).addActionListener(listener);
-    }
-
-    /**
-     * @return the number of buttons the panel contains.
-     */
-    public int getNrButtons() {
-        return nrButtons;
-    }
-
-    /**
-     * receives a list of objects and creates the header of the table by accessing the fields of the elements of data through reflection, and then adds entries in the table.
-     * @param data list of objects
-     */
-
-    /**
-     * attempts to make a label in the panel visible or not.
-     * @param visible true to be visible, false if not.
-     * @param nrOfTheLabel the index of the label in the wrongLabels list.
-     * @param all true if all the labels to be set visible/unvisible, false if only one of them.
-     */
     public void setWrongLabelVisible(boolean visible, int nrOfTheLabel, boolean all)
     {
         if(all)

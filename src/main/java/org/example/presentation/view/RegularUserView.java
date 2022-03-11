@@ -1,9 +1,7 @@
 package org.example.presentation.view;
 
-        import org.example.App;
         import org.example.business.model.VacationPackage;
         import org.example.presentation.controller.RegularUserController;
-        import org.example.presentation.controller.TravellingAgencyController;
 
         import javax.swing.*;
         import javax.swing.border.Border;
@@ -11,25 +9,16 @@ package org.example.presentation.view;
         import java.awt.*;
         import java.awt.event.ActionEvent;
         import java.awt.event.ActionListener;
-        import java.beans.PropertyDescriptor;
-        import java.lang.reflect.Field;
-        import java.lang.reflect.Method;
         import java.util.ArrayList;
 
 public class RegularUserView extends JPanel {
-    private int nrButtons;
-    /** the list of buttons in the view. */
-    public ArrayList<JButton> buttons;
-    private int nrFields;
-    /** the list of text fields in the view. */
-    public ArrayList<JTextField> fields;
+    private ArrayList<JButton> buttons;
+    private ArrayList<JTextField> fields;
     private int nrWrongLabels;
-    /** the list of labels which will be used for showing error messages */
-    public ArrayList<JLabel> wrongLabels;
-    private RegularUserController regularUserController;
+    private ArrayList<JLabel> wrongLabels;
 
-    public JTable availablePackagesTable;
-    public JTable myBookedPackagesTable;
+    private JTable availablePackagesTable;
+    private JTable myBookedPackagesTable;
     private DefaultTableModel tableModelAvailablePackages;
     private DefaultTableModel tableModelBookedPackages;
 
@@ -41,14 +30,12 @@ public class RegularUserView extends JPanel {
     public RegularUserView(int height, int width, RegularUserController regularUserController)
     {
         super();
-        this.regularUserController=regularUserController;
         this.setBounds(0,0, height, width);
         this.setLayout(null);
         this.setBackground(Color.DARK_GRAY);
-        nrButtons=4;
         buttons=new ArrayList<>();
 
-        for(int i=0;i<nrButtons;i++)
+        for(int i=0;i<4;i++)
         {
             JButton button=new JButton();
             button.setOpaque(false);
@@ -95,11 +82,9 @@ public class RegularUserView extends JPanel {
         dataLabels[5].setText("End date:");
         dataLabels[5].setBounds(60,800,150,30);
 
-
-        nrFields=4;
         fields = new ArrayList<>();
 
-        for(int i=0;i<nrFields;i++)
+        for(int i=0;i<4;i++)
         {
             JTextField field=new JTextField();
             field.setFont(new Font("TimesRoman",20,20));
@@ -229,35 +214,6 @@ public class RegularUserView extends JPanel {
 
     }
 
-    /**
-     * attempts to add an action listener to one of the button of the panel.
-     * @param listener reference to the action listener.
-     * @param nrOfTheButton the index of the button in the buttons array.
-     */
-    public void addButtonListener(ActionListener listener, int nrOfTheButton)
-    {
-        if(nrOfTheButton<nrButtons)
-            buttons.get(nrOfTheButton).addActionListener(listener);
-    }
-
-    /**
-     * @return the number of buttons the panel contains.
-     */
-    public int getNrButtons() {
-        return nrButtons;
-    }
-
-    /**
-     * receives a list of objects and creates the header of the table by accessing the fields of the elements of data through reflection, and then adds entries in the table.
-     * @param data list of objects
-     */
-
-    /**
-     * attempts to make a label in the panel visible or not.
-     * @param visible true to be visible, false if not.
-     * @param nrOfTheLabel the index of the label in the wrongLabels list.
-     * @param all true if all the labels to be set visible/unvisible, false if only one of them.
-     */
     public void setWrongLabelVisible(boolean visible, int nrOfTheLabel, boolean all)
     {
         if(all)

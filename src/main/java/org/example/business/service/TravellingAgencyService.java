@@ -5,16 +5,20 @@ import org.example.business.model.TravellingAgency;
 import org.example.business.model.VacationDestination;
 import org.example.business.model.VacationPackage;
 import org.example.persistance.TravellingAgencyRepository;
-import org.example.presentation.view.TravellingAgencyView;
+import org.example.persistance.VacationDestinationRepository;
+import org.example.persistance.VacationPackageRepository;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TravellingAgencyService {
     private final TravellingAgencyRepository travellingAgencyRepository;
+    private final VacationPackageRepository vacationPackageRepository;
+    private final VacationDestinationRepository vacationDestinationRepository;
 
     public TravellingAgencyService(){
         this.travellingAgencyRepository=new TravellingAgencyRepository();
+        this.vacationPackageRepository=new VacationPackageRepository();
+        this.vacationDestinationRepository= new VacationDestinationRepository();
     }
 
     public TravellingAgency findAgencyByEmailAndPassword(String email, String password){
@@ -25,13 +29,13 @@ public class TravellingAgencyService {
 
     public ArrayList<VacationDestination> getVacationDestinations(TravellingAgency travellingAgency){
         if(travellingAgency!=null)
-            return travellingAgencyRepository.getVacationDestinations(travellingAgency.getId());
+            return vacationDestinationRepository.getVacationDestinationsByAgencyId(travellingAgency.getId());
         else return null;
     }
 
     public ArrayList<VacationPackage> getVacationPackages(TravellingAgency travellingAgency){
         if(travellingAgency!=null)
-            return travellingAgencyRepository.getVacationPackages(travellingAgency.getId());
+            return vacationPackageRepository.getVacationPackagesByAgencyId(travellingAgency.getId());
         else return null;
     }
 
@@ -40,7 +44,7 @@ public class TravellingAgencyService {
             return null;
 
         VacationDestination newDest = new VacationDestination(name, travellingAgency);
-        travellingAgencyRepository.addVacationDestination(newDest);
+        vacationDestinationRepository.addVacationDestination(newDest);
         return newDest;
     }
 
@@ -75,10 +79,10 @@ public class TravellingAgencyService {
         if(details==null || details.equals("") || details.length()>200)
             throw new Exception("details");
 
-        VacationDestination vacationDestination = travellingAgencyRepository.getDestinationById(destinationId);
+        VacationDestination vacationDestination = vacationDestinationRepository.getDestinationById(destinationId);
 
         VacationPackage newPackage = new VacationPackage(name, pr, startDate, endDate, details, nrP, travellingAgency, vacationDestination);
-        travellingAgencyRepository.addVacationPackage(newPackage);
+        vacationPackageRepository.addVacationPackage(newPackage);
         return newPackage;
     }
 
@@ -113,14 +117,15 @@ public class TravellingAgencyService {
         if(details==null || details.equals("") || details.length()>200)
             throw new Exception("details");
 
-        travellingAgencyRepository.updateVacationPackage(name, startDate, endDate, nrP, pr, details, packageId);
+        vacationPackageRepository.updateVacationPackage(name, startDate, endDate, nrP, pr, details, packageId);
     }
 
     public void deleteVacationPackageById(long package_id){
-        travellingAgencyRepository.deleteVacationPackageById(package_id);
+        vacationPackageRepository.deleteVacationPackageById(package_id);
     }
     public void deleteVacationDestinationById(long destination_id){
-        travellingAgencyRepository.deleteVacationDestinationById(destination_id);
+        vacationPackageRepository.deleteVacationPackageByDestinationId(destination_id);
+        vacationDestinationRepository.deleteVacationDestinationById(destination_id);
     }
 }
 

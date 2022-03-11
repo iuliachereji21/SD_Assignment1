@@ -1,19 +1,13 @@
 package org.example.presentation.controller;
 
-import org.example.business.model.RegularUser;
 import org.example.business.model.TravellingAgency;
 import org.example.business.model.VacationDestination;
 import org.example.business.model.VacationPackage;
-import org.example.business.service.RegularUserService;
 import org.example.business.service.TravellingAgencyService;
-import org.example.presentation.view.LogInView;
 import org.example.presentation.view.MainFrame;
 import org.example.presentation.view.TravellingAgencyView;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class TravellingAgencyController {
@@ -29,7 +23,7 @@ public class TravellingAgencyController {
 
     public void addMainFrame(MainFrame mainFrame){
         this.mainFrame=mainFrame;
-        this.travellingAgencyView=(TravellingAgencyView) mainFrame.panels[2];
+        this.travellingAgencyView=(TravellingAgencyView) mainFrame.getPanel(2);
     }
 
     public TravellingAgency findAgencyByEmailAndPassword(String email, String password){

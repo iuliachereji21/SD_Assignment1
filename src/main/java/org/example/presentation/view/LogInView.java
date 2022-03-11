@@ -1,52 +1,36 @@
 package org.example.presentation.view;
 
-import org.example.App;
 import org.example.business.model.RegularUser;
 import org.example.business.model.TravellingAgency;
-import org.example.presentation.controller.LogInController;
+import org.example.presentation.controller.RegularUserController;
 import org.example.presentation.controller.TravellingAgencyController;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class LogInView extends JPanel {
-    private int nrButtons;
-    /** the list of buttons in the view. */
-    public ArrayList<JButton> buttons;
-    private int nrFields;
-    /** the list of text fields in the view. */
-    public ArrayList<JTextField> fields;
+    private ArrayList<JButton> buttons;
+    private ArrayList<JTextField> fields;
     private int nrWrongLabels;
-    /** the list of labels which will be used for showing error messages */
-    public ArrayList<JLabel> wrongLabels;
-    private LogInController logInController;
-    private MainFrame mainFrame;
+    private ArrayList<JLabel> wrongLabels;
 
     /**
      * Creates a new instance of ClientsViewPanel.
      * @param height height of the panel
      * @param width width of the panel
      */
-    public LogInView(int height, int width, LogInController logInController, MainFrame mainFrame)
+    public LogInView(int height, int width, RegularUserController regularUserController, TravellingAgencyController travellingAgencyController, MainFrame mainFrame)
     {
         super();
-        this.logInController=logInController;
-        this.mainFrame=mainFrame;
         this.setBounds(0,0, height, width);
         this.setLayout(null);
         this.setBackground(Color.DARK_GRAY);
-        nrButtons=2;
         buttons=new ArrayList<>();
 
-        for(int i=0;i<nrButtons;i++)
+        for(int i=0;i<2;i++)
         {
             JButton button=new JButton();
             button.setOpaque(false);
@@ -54,7 +38,7 @@ public class LogInView extends JPanel {
             button.setBorder(BorderFactory.createLineBorder(Color.WHITE,1));
             button.setForeground(Color.WHITE);
             button.setFont(new Font("TimesRoman",20,20));
-            button.addActionListener(new ButtonsListenerLogIn(this,logInController, mainFrame));
+            button.addActionListener(new ButtonsListenerLogIn(this,regularUserController, travellingAgencyController, mainFrame));
             buttons.add(button);
             this.add(button);
         }
@@ -81,7 +65,6 @@ public class LogInView extends JPanel {
         dataLabels[1].setText("Password:");
         dataLabels[1].setBounds(470,410,150,30);
 
-        nrFields=2;
         fields = new ArrayList<>();
 
         JTextField field=new JTextField();
@@ -120,35 +103,6 @@ public class LogInView extends JPanel {
         wrongLabels.get(0).setBounds(1120,330,440,30);
     }
 
-    /**
-     * attempts to add an action listener to one of the button of the panel.
-     * @param listener reference to the action listener.
-     * @param nrOfTheButton the index of the button in the buttons array.
-     */
-    public void addButtonListener(ActionListener listener, int nrOfTheButton)
-    {
-        if(nrOfTheButton<nrButtons)
-            buttons.get(nrOfTheButton).addActionListener(listener);
-    }
-
-    /**
-     * @return the number of buttons the panel contains.
-     */
-    public int getNrButtons() {
-        return nrButtons;
-    }
-
-    /**
-     * receives a list of objects and creates the header of the table by accessing the fields of the elements of data through reflection, and then adds entries in the table.
-     * @param data list of objects
-     */
-
-    /**
-     * attempts to make a label in the panel visible or not.
-     * @param visible true to be visible, false if not.
-     * @param nrOfTheLabel the index of the label in the wrongLabels list.
-     * @param all true if all the labels to be set visible/unvisible, false if only one of them.
-     */
     public void setWrongLabelVisible(boolean visible, int nrOfTheLabel, boolean all)
     {
         if(all)
@@ -160,12 +114,14 @@ public class LogInView extends JPanel {
 
     class ButtonsListenerLogIn implements ActionListener {
         private LogInView view;
-        private LogInController logInController;
+        private RegularUserController regularUserController;
+        private TravellingAgencyController travellingAgencyController;
         private MainFrame mainFrame;
-        public ButtonsListenerLogIn(LogInView view, LogInController logInController, MainFrame mainFrame){
+        public ButtonsListenerLogIn(LogInView view, RegularUserController regularUserController, TravellingAgencyController travellingAgencyController, MainFrame mainFrame){
             super();
             this.view=view;
-            this.logInController=logInController;
+            this.regularUserController=regularUserController;
+            this.travellingAgencyController=travellingAgencyController;
             this.mainFrame=mainFrame;
         }
         @Override
@@ -177,10 +133,16 @@ public class LogInView extends JPanel {
                 String password = view.fields.get(1).getText();
 
                 if(email.contains("@agency.com")){
-                    logInController.logInAgency(email, password);
+                    TravellingAgency agency = travellingAgencyController.findAgencyByEmailAndPassword(email, password);
+                    if(agency==null)
+                        view.setWrongLabelVisible(true,0,false);
+                    else mainFrame.setPanel(2);
                 }
                 else{
-                    logInController.logInRegularUser(email, password);
+                    RegularUser user = regularUserController.findUserByEmailAndPassword(email, password);
+                    if(user==null)
+                        view.setWrongLabelVisible(true,0,false);
+                    else mainFrame.setPanel(3);
                 }
             }
             else
